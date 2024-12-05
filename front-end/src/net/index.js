@@ -6,8 +6,8 @@ import router from "@/router/index.js";
 const tokenKey = 'access_token'
 
 // 存储 token，根据参数 remember 决定存储位置
-function saveToken(token, expire, remember){
-    const obj = { token: token, expire: expire }
+function saveToken(token, expire, role, remember){
+    const obj = { token: token, expire: expire, role: role }
     const str = JSON.stringify(obj)
     if(remember){
         localStorage.setItem(tokenKey, str)
@@ -39,6 +39,23 @@ function getToken(){
     }
 
     return obj.token
+}
+
+// 获取用户角色
+function getRole(){
+    let str = localStorage.getItem(tokenKey)
+    if(!str) str = sessionStorage.getItem(tokenKey)
+
+    // 检查是否登录
+    if(!str) return null
+
+    // 只有登录不过期才返回对应的 role
+    const obj = JSON.parse(str)
+    if(obj.expire <= new Date()){
+        removeToken()
+        return null
+    }
+    return obj.role
 }
 
 // 封装 token 请求头
@@ -106,4 +123,4 @@ function post(url, data, success){
     })
 }
 
-export{ saveToken, removeToken, getToken, get, post }
+export{ saveToken, removeToken, getToken, getRole, get, post }

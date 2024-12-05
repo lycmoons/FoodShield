@@ -25,7 +25,7 @@
 
   function loginSuccess(data){
     // 存储 token
-    saveToken(data.token, data.expire, form.remember)
+    saveToken(data.token, data.expire, data.role, form.remember)
 
     // 进入主界面
     ElMessage.success(`登录成功，欢迎 ${data.username}`)

@@ -1,5 +1,5 @@
 import {createRouter, createWebHistory} from "vue-router";
-import {getToken} from "@/net/index.js";
+import {getRole, getToken} from "@/net/index.js";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -30,6 +30,11 @@ const router = createRouter({
             path: '/index',
             name: 'index',
             component: () => import('@/views/IndexView.vue')
+        },
+        {
+            path: '/admin',
+            name: 'admin',
+            component: () => import('@/views/AdminView.vue')
         }
     ]
 })
@@ -41,10 +46,16 @@ router.beforeEach((to, from, next) => {
     // 选择记住密码后，token被存储在localStorage中
     // 下次登录是可以获取的，故不能再访问登录界面，直接重定向到主界面，完成记住密码的功能
     if(to.name.startsWith('welcome-') && token !== null) {
-        next('/index')  // 重定向
+        let role = getRole()
+        if (role === 'user'){
+            next('/index')  // 重定向
+        }
+        else if (role === 'admin'){
+            next('/admin')
+        }
     }
 
-    else if(to.fullPath.startsWith('/index') && token === null){  // 没登录之前不能访问主界面
+    else if((to.fullPath.startsWith('/index') || to.fullPath.startsWith('/admin')) && token === null){  // 没登录之前不能访问主界面
         next('/')  // 重定向
     }
 
