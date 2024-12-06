@@ -6,11 +6,14 @@ import com.lycmoons.util.Const;
 import jakarta.annotation.Resource;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.stereotype.Service;
+
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 
+@Service
 public class EmailServiceImpl implements EmailService {
     @Resource
     AmqpTemplate amqpTemplate;

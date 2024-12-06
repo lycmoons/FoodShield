@@ -3,7 +3,9 @@ package com.lycmoons.entity;
 import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.JSONWriter;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 
+@Data
 @AllArgsConstructor
 public class RestBean<T> {
     int code;

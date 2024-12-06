@@ -40,7 +40,11 @@ public class SecurityConfig {
         return http
                 // 请求拦截
                 .authorizeHttpRequests(conf -> conf
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/auth/**",
+                                         "/api/email/**",
+                                         "/api/account/**")
+
+                        .permitAll()
                         .anyRequest().authenticated()
                 )
 
