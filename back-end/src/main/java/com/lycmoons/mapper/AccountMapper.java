@@ -13,6 +13,10 @@ public interface AccountMapper {
     @Select("select * from Account where email = #{email}")
     AccountDTO findAccountByEmail(@Param("email") String email);
 
+    // 使用 id 来查询用户
+    @Select("select * from Account where id = #{id}")
+    AccountDTO findAccountById(@Param("id") Integer id);
+
     // 插入新用户
     @Insert("insert into Account values (#{id}, #{username}, #{email}, #{password}, #{role})")
     int insertAccount(AccountDTO account);

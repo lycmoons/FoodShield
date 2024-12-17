@@ -3,6 +3,7 @@ package com.lycmoons.service.impl;
 import com.lycmoons.entity.dto.AccountDTO;
 import com.lycmoons.entity.vo.request.RegisterVO;
 import com.lycmoons.entity.vo.request.ResetPasswordVO;
+import com.lycmoons.entity.vo.response.PersonalInfoVO;
 import com.lycmoons.mapper.AccountMapper;
 import com.lycmoons.service.AccountService;
 import com.lycmoons.service.EmailService;
@@ -86,5 +87,12 @@ public class AccountServiceImpl implements AccountService {
         int cnt = accountMapper.updatePassword(email, password);
         if(cnt > 0) return null;
         return "密码修改失败";
+    }
+
+    @Override
+    public PersonalInfoVO getPersonalInfo(Integer userId) {
+        AccountDTO account = accountMapper.findAccountById(userId);
+        if(account == null) return null;
+        return new PersonalInfoVO(account.getUsername(), account.getEmail());
     }
 }

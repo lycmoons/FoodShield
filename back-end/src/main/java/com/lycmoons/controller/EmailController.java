@@ -12,6 +12,7 @@ public class EmailController {
     @Resource
     EmailService emailService;
 
+    // 获取邮箱验证码
     @PostMapping("/ask-code")
     public RestBean<Void> askCode(@RequestBody AskForCodeVO vo){
         String msg = emailService.askForCode(vo);

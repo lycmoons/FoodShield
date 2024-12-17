@@ -9,7 +9,9 @@ import com.auth0.jwt.interfaces.JWTVerifier;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -55,6 +57,7 @@ public class JwtUtil {
                 .withIssuedAt(new Date())
                 .sign(algorithm);
     }
+
 
     // 解析 token，返回 DecodedJWT 类型数据
     public DecodedJWT resolveJwt(String token) {
@@ -114,9 +117,6 @@ public class JwtUtil {
     public Date getIssuedTime(DecodedJWT jwt){
         return jwt.getIssuedAt();
     }
-
-
-
 
     // 将 token 列入黑名单
     public void turnBlack(String uuid, Date expiresAt){

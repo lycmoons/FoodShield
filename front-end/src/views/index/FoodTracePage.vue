@@ -1,0 +1,145 @@
+<script setup>
+
+import {computed, onMounted, reactive} from "vue";
+import {get} from "@/net/index.js";
+
+function getAllFood(){
+  get('/api/food/all-food',(data) => {
+    for (const item of data){
+      form.food.push({
+        id: item.id,
+        name: item.name,
+        date: (new Date(item.date)).toLocaleString(),
+        manufacturer: item.manufacturer,
+        batch_num: item.batch_num,
+        photo_url: item.photo_url
+      })
+    }
+  })
+}
+
+onMounted(() => {
+  getAllFood()
+})
+
+let form = reactive({
+  food: [],
+  searchQuery: "", // 搜索框的输入内容
+  expandedId: null, // 当前展开的食物项ID
+})
+
+
+// 计算属性：根据搜索框内容过滤数据
+const filteredFood = computed(() => {
+  if (!form.searchQuery) {
+    return form.food;
+  }
+  return form.food.filter((item) =>
+      item.name.includes(form.searchQuery)
+  );
+})
+
+// 切换展开项的方法
+const toggleExpand = (id) => {
+  form.expandedId = form.expandedId === id ? null : id;
+}
+</script>
+
+<template>
+  <div class="container">
+    <!-- 搜索框 -->
+    <div class="search-box">
+      <el-input
+          type="text"
+          v-model="form.searchQuery"
+          placeholder="搜索食物名称..."
+      />
+    </div>
+
+    <!-- 食物列表 -->
+    <div class="food-list">
+      <div
+          class="food-item"
+          v-for="item in filteredFood"
+          :key="item.id"
+      >
+        <!-- 食物名称，点击展开/折叠 -->
+        <div class="food-name" @click="toggleExpand(item.id)">
+          {{ item.name }}
+        </div>
+
+        <!-- 详细信息（如果展开） -->
+        <div
+            v-if="form.expandedId === item.id"
+            class="food-details"
+        >
+          <p><strong>生产日期：</strong>{{ item.date || "暂无信息" }}</p>
+          <p><strong>生产商：</strong>{{ item.manufacturer }}</p>
+          <p><strong>批次号：</strong>{{ item.batch_num }}</p>
+          <img
+              :src="item.photo_url"
+              alt="食品图片"
+              class="food-photo"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  padding: 20px;
+  max-width: 600px;
+  margin: auto;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.food-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.food-item {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.food-name {
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.food-name:hover {
+  text-decoration: underline;
+}
+
+.food-details {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #666;
+}
+
+.food-photo {
+  margin-top: 10px;
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+</style>

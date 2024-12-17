@@ -1,11 +1,11 @@
 spring:
-  # ????????
+  # 官方邮箱
   mail:
     host: smtp.163.com
     username: lycmoons@163.com
-    password: MVWFFe56fbasKFs9   # ????????????????????????
+    password: MVWFFe56fbasKFs9   # 邮箱应用专用密码
 
-  # rabbitmq ????
+  # rabbitmq 消息队列
   rabbitmq:
     addresses: localhost
     username: guest
@@ -13,27 +13,31 @@ spring:
     virtual-host: /
     port: 5672
 
-  # security ????
+  # security
   security:
-    # filter ????
+    # filter 链
     filter:
       order: -100
-    # jwt ?????
+    # jwt 令牌
     jwt:
       key: lycmoons
       expire: 7
 
-  # mysql ????
+  # mysql 数据库
   datasource:
     url: jdbc:mysql://localhost:3306/foodSafety
     username: root
     password: 543416Liu*
     driver-class-name: com.mysql.cj.jdbc.Driver
 
-  # redis ????
+  # redis 数据库
   data:
     redis:
       host: localhost
       port: 6379
       password:
       database: 0
+
+  serverip: localhost
+  upload-path: /Users/aidon/Desktop/uploads
+  upload-directory: uploads

@@ -41,7 +41,15 @@ public class SecurityConfig {
                 // 请求拦截
                 .authorizeHttpRequests(conf -> conf
                         .requestMatchers("/api/auth/**",
+                                         "/api/complaint/**",
+                                         "/api/comment/**",
+                                         "/api/report/**",
+                                         "/api/food/**",
                                          "/api/email/**",
+                                         "/api/news/**",
+                                         "/api/post/**",
+                                         "/api/knowledge/**",
+                                         "/uploads/**",
                                          "/api/account/**")
 
                         .permitAll()
