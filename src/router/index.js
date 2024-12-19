@@ -180,23 +180,23 @@ const router = createRouter({
                     path: 'reportmanage',
                     name: 'reportmanage',
                     component: () => import('@/views/admin/ReportManagePage.vue'),
-                    children: [
-                        {
-                            path: 'reportlist',
-                            name: 'reportlist',
-                            component: () => import('@/views/admin/report/ReportListPage.vue'),
-                        },
-                        {
-                            path: 'reportdetail',
-                            name: 'reportdetail',
-                            component: () => import('@/views/admin/report/ReportDetailPage.vue'),
-                        },
-                        {
-                            path: 'createreport',
-                            name: 'createreport',
-                            component: () => import('@/views/admin/report/CreateReportPage.vue'),
-                        },
-                    ]
+                    // children: [
+                    //     {
+                    //         path: 'reportlist',
+                    //         name: 'reportlist',
+                    //         component: () => import('@/views/admin/report/ReportListPage.vue'),
+                    //     },
+                    //     {
+                    //         path: 'reportdetail',
+                    //         name: 'reportdetail',
+                    //         component: () => import('@/views/admin/report/ReportDetailPage.vue'),
+                    //     },
+                    //     {
+                    //         path: 'createreport',
+                    //         name: 'createreport',
+                    //         component: () => import('@/views/admin/report/CreateReportPage.vue'),
+                    //     },
+                    // ]
                 },
                 
 

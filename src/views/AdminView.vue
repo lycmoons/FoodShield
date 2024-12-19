@@ -71,8 +71,9 @@ function userLogout(){
               <el-icon><PieChart /></el-icon>
               <span>食品安全数据报告</span>
             </template>
-            <el-menu-item index="3-1" @click="router.push('/reportmanage/reportlist')">数据报告列表</el-menu-item>
-            <el-menu-item index="3-2" @click="router.push('/reportmanage/createreport')">生成与发布报告</el-menu-item>
+            <el-menu-item index="3-1" @click="router.push('/reportmanage')">数据报告查看与发布</el-menu-item>
+            <!-- <el-menu-item index="3-1" @click="router.push('/reportmanage/reportlist')">数据报告列表</el-menu-item> -->
+            <!-- <el-menu-item index="3-2" @click="router.push('/reportmanage/createreport')">生成与发布报告</el-menu-item> -->
           </el-sub-menu>
 
           <el-sub-menu index="4">

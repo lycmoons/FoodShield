@@ -168,9 +168,7 @@ const deleteInfo = () => {
               <el-input v-model="form.batch_num" placeholder="请输入批次号" :disabled="!isEditing" />
             </el-form-item>
             <el-form-item label="图片" prop="image">
-              <div v-if="isEditing">
-                <input type="file" @change="handleFileChange" accept="image/*" class="file-input" />
-              </div>
+              <input type="file" @change="handleFileChange" accept="image/*" class="file-input" />
             </el-form-item>
           </el-form>
         </div>
