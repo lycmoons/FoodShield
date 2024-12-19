@@ -65,7 +65,7 @@ const rule = {
 };
 
 // 示例分类数据
-const categories = ref(["分类1", "分类2", "分类3"]);
+const categories = ref(["商超", "食安信息化", "健康", "餐饮", "零食"]);
 
 // 编辑模式开关
 const isEditing = ref(false);

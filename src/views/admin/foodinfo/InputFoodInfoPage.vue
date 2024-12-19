@@ -1,5 +1,6 @@
 <script setup>
 import { reactive, ref } from "vue";
+import { Close } from '@element-plus/icons-vue';
 import { useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
 import axios from "axios";
@@ -11,7 +12,7 @@ const form = reactive({
   date: "",
   manufacturer: "",
   batch_num: "",
-  photo_url: "",
+  image: null,
 });
 
 // 表单校验规则
@@ -20,7 +21,7 @@ const rules = {
   date: [{ required: true, message: '请输入日期', trigger: 'blur' }],
   manufacturer: [{ required: true, message: '请输入制造商', trigger: 'blur' }],
   batch_num: [{ required: true, message: '请输入批次号', trigger: 'blur' }],
-  photo_url: [{ required: true, message: '请上传图片', trigger: 'change' }],
+  image: [{ required: true, message: '请上传图片', trigger: 'change' }],
 };
 
 const formRef = ref();
@@ -34,8 +35,8 @@ const submitForm = () => {
       formData.append("date", form.date);
       formData.append("manufacturer", form.manufacturer);
       formData.append("batch_num", form.batch_num);
-      formData.append("photo_url", form.photo_url);
-
+      formData.append("image", form.image);
+      console.log(form)
       axios.post('/api/food', formData) // 不知道是啥
         .then(response => {
           ElMessage.success('食品信息已提交！');
@@ -54,23 +55,21 @@ const submitForm = () => {
 const resetForm = () => {
   if (formRef.value) {
     formRef.value.resetFields();
+    // 手动清空文件输入框的值
+    const fileInput = document.querySelector('.file-input');
+    if (fileInput) {
+      fileInput.value = '';  // 清空文件输入框
+    }
     ElMessage.success("表单已重置");
   } else {
     ElMessage.error("表单未绑定");
   }
 };
 
-// 处理图片上传
-const handleUpload = (event) => {
-  const file = event.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      form.photo_url = e.target.result;
-    };
-    reader.readAsDataURL(file);
-  }
-};
+// 处理图片选择
+const handleFileChange = (event) => {
+  form.image = event.target.files;
+}
 </script>
 
 <template>
@@ -96,11 +95,8 @@ const handleUpload = (event) => {
           <el-form-item label="批次号" prop="batch_num">
             <el-input v-model="form.batch_num" placeholder="请输入批次号" />
           </el-form-item>
-          <el-form-item label="图片上传" prop="photo_url">
-            <input type="file" @change="handleUpload" style="border: 2px solid #dcdfe6; " />
-            <div v-if="form.photo_url" style="margin-top: 10px;">
-              <img :src="form.photo_url" alt="图片" style="width: 200px; height: 200px; margin-right: 10px;" />
-            </div>
+          <el-form-item label="图片上传" prop="image">
+            <input type="file" @change="handleFileChange" accept="image/*" class="file-input" />
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="submitForm">提交</el-button>
@@ -132,5 +128,15 @@ const handleUpload = (event) => {
   max-width: 1000px;
   box-shadow: 0 4px 12px rgba(53, 4, 4, 0.1);
   background-color: #f9fafc;
+}
+
+.input,
+.textarea,
+.file-input {
+  width: 95%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 </style>

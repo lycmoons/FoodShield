@@ -13,7 +13,7 @@ const form = reactive({
   photo_url: "", // 存储上传的图片文件对象
 });
 
-const categories = ref(["分类1", "分类2", "分类3"]);
+const categories = ref(["商超", "食安信息化", "健康", "餐饮", "零食"]);
 
 const formRef = ref();
 const previewImages = ref([]);

@@ -23,7 +23,7 @@ const generateData = () => {
     data.push({
       id: `F${i}`,
       title: `食品安全知识${i + 1}`,
-      category: `分类${(i % 5) + 1}`,
+      category: `商超`,
       date: `2024-12-${(i % 30) + 1} 12:00`,
     });
   }

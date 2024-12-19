@@ -3,6 +3,7 @@ import { onMounted, reactive, ref } from "vue";
 import { useRoute } from "vue-router";
 import { ElMessage,ElMessageBox} from "element-plus";
 import axios from "axios";
+import router from "@/router/index.js";
 
 // 路由参数
 const route = useRoute();
@@ -11,6 +12,15 @@ const foodInfoId = ref(route.query.id || "未知");
 // 表单数据
 const form = reactive({
   id: "",
+  name: "",
+  date: "",
+  manufacturer: "",
+  batch_num: "",
+  image: null,
+});
+
+const foodInfoDetail = ref({
+  foodInfoId: "",
   name: "",
   date: "",
   manufacturer: "",
@@ -24,7 +34,7 @@ const rules = {
   date: [{ required: true, message: '请输入日期', trigger: 'blur' }],
   manufacturer: [{ required: true, message: '请输入制造商', trigger: 'blur' }],
   batch_num: [{ required: true, message: '请输入批次号', trigger: 'blur' }],
-  photo_url: [{ required: true, message: '请上传图片', trigger: 'change' }],
+  image: [{ required: true, message: '请上传图片', trigger: 'change' }],
 };
 
 const formRef = ref(null);
@@ -32,12 +42,14 @@ const isEditing = ref(false);
 
 // 模拟后端获取的原有数据
 onMounted(() => {
-  form.id = foodInfoId;
-  form.name = "苹果";
-  form.date = "2023-12-01";
-  form.manufacturer = "苹果公司";
-  form.batch_num = "001";
-  form.photo_url = "https://example.com/image1.jpg";
+  foodInfoDetail.value = {
+    foodInfoId: foodInfoId,
+    name: "苹果",
+    date: "2023-12-01",
+    manufacturer: "苹果公司",
+    batch_num: "001",
+    photo_url: "https://th.bing.com/th/id/R.f5cceae4d5b934e75d32f17f46752d60?rik=A%2fg%2bviCX5rERQQ&riu=http%3a%2f%2fpic2.nipic.com%2f20090409%2f2406232_105320007_2.jpg&ehk=Xe7s%2bbbTTIPTyCnszWDwYIdBf7OF77ERlAfIkmvgick%3d&risl=&pid=ImgRaw&r=0",
+  }
 });
 
 // 提交表单
@@ -50,12 +62,14 @@ const submitForm = () => {
       formData.append("date", form.date);
       formData.append("manufacturer", form.manufacturer);
       formData.append("batch_num", form.batch_num);
-      formData.append("photo_url", form.photo_url);
-      
+      formData.append("image", form.image);
+      isEditing.value = false;
       axios.post('/api/food', formData)
         .then(response => {
+          
           ElMessage.success('食品信息已提交！');
-          router.push('/'); 
+          onMounted() // 不退出的话就更新页面
+          router.go(-1);
         })
         .catch(error => {
           ElMessage.error('提交失败，请重试！');
@@ -66,33 +80,47 @@ const submitForm = () => {
   });
 };
 
-// 处理图片上传
-const handleUpload = (event) => {
-  const file = event.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      form.photo_url = e.target.result;
-    };
-    reader.readAsDataURL(file);
-  }
-};
+// 编辑内容数据
+const editDetail = ref({
+  name: "",
+  date: "",
+  manufacturer: "",
+  batch_num: "",
+  photo_url: ""
+});
 
-// 保存编辑
-const saveEdit = () => {
-  isEditing.value = false;
-  ElMessage.success("信息已保存！");
-};
+// 处理图片选择
+const handleFileChange = (event) => {
+  form.image = event.target.files;
+}
+
+// 启动编辑模式 
+const startEditing = () => { 
+  isEditing.value = true; 
+  editDetail.value = { 
+    foodInfoId: foodInfoId,
+    name: foodInfoDetail.value.name,
+    date: foodInfoDetail.value.date,
+    manufacturer: foodInfoDetail.value.manufacturer,
+    batch_num: foodInfoDetail.value.batch_num,
+    photo_url: foodInfoDetail.value.photo_url,
+  }; 
+  form.id = foodInfoId;
+  form.name = editDetail.value.name;
+  form.date = editDetail.value.date; 
+  form.manufacturer = editDetail.value.manufacturer;
+  form.batch_num = editDetail.value.batch_num;
+}; 
 
 // 取消编辑
-const cancelEdit = () => {
+const cancelEditing = () => {
   isEditing.value = false;
-  onMounted(); // 重置表单为原有数据
-};
-
-// 发布信息
-const publishInfo = () => {
-  ElMessage.success("信息已发布！");
+  editDetail.value = {
+    name: "",
+    date: "",
+    manufacturer: "",
+    batch_num: "",
+  };
 };
 
 // 删除信息 
@@ -122,36 +150,61 @@ const deleteInfo = () => {
 
     <el-main>
       <el-card style="width: 80%; margin-bottom: 20px;">
-        <el-form ref="formRef" :model="form" :rules="rules" label-width="120px" style="width: 60%; margin: 0 auto;">
-          <el-form-item label="ID" prop="id">
-            <el-input v-model="form.id" placeholder="请输入ID" disabled />
-          </el-form-item>
-          <el-form-item label="食品名称" prop="name">
-            <el-input v-model="form.name" placeholder="请输入食品名称" :disabled="!isEditing" />
-          </el-form-item>
-          <el-form-item label="日期" prop="date">
-            <el-date-picker v-model="form.date" type="date" placeholder="请选择日期" style="width: 100%;" :disabled="!isEditing" />
-          </el-form-item>
-          <el-form-item label="制造商" prop="manufacturer">
-            <el-input v-model="form.manufacturer" placeholder="请输入制造商" :disabled="!isEditing" />
-          </el-form-item>
-          <el-form-item label="批次号" prop="batch_num">
-            <el-input v-model="form.batch_num" placeholder="请输入批次号" :disabled="!isEditing" />
-          </el-form-item>
-          <el-form-item label="图片上传" prop="photo_url">
-            <input type="file" @change="handleUpload" v-show="isEditing"/>
-            <div v-if="form.photo_url" style="margin-top: 10px;">
-              <img :src="form.photo_url" alt="图片" style="width: 200px; height: 200px; margin-right: 10px;" />
-            </div>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="submitForm" v-show="!isEditing">提交</el-button>
-            <el-button type="info" @click="isEditing = true" v-show="!isEditing">编辑</el-button>
-            <el-button type="success" @click="saveEdit" v-show="isEditing">保存</el-button>
-            <el-button type="info" @click="cancelEdit" v-show="isEditing">取消编辑</el-button>
-            <el-button type="danger" @click="deleteInfo">删除</el-button>
-          </el-form-item>
-        </el-form>
+        <div v-if="isEditing">
+          <el-form ref="formRef" :model="form" :rules="rules" label-width="120px" style="width: 60%; margin: 0 auto;">
+            <el-form-item label="ID" prop="id">
+              <el-input v-model="form.id" placeholder="请输入ID" disabled />
+            </el-form-item>
+            <el-form-item label="食品名称" prop="name">
+              <el-input v-model="form.name" placeholder="请输入食品名称" :disabled="!isEditing" />
+            </el-form-item>
+            <el-form-item label="日期" prop="date">
+              <el-date-picker v-model="form.date" type="date" placeholder="请选择日期" style="width: 100%;" :disabled="!isEditing" />
+            </el-form-item>
+            <el-form-item label="制造商" prop="manufacturer">
+              <el-input v-model="form.manufacturer" placeholder="请输入制造商" :disabled="!isEditing" />
+            </el-form-item>
+            <el-form-item label="批次号" prop="batch_num">
+              <el-input v-model="form.batch_num" placeholder="请输入批次号" :disabled="!isEditing" />
+            </el-form-item>
+            <el-form-item label="图片" prop="image">
+              <div v-if="isEditing">
+                <input type="file" @change="handleFileChange" accept="image/*" class="file-input" />
+              </div>
+            </el-form-item>
+          </el-form>
+        </div>
+        <div v-else>
+          <el-form label-width="120px" style="width: 60%; margin: 0 auto;">
+          <el-form-item label="ID">
+              <el-input v-model="foodInfoDetail.foodInfoId" placeholder="请输入ID" disabled />
+            </el-form-item>
+            <el-form-item label="食品名称">
+              <el-input v-model="foodInfoDetail.name" placeholder="请输入食品名称" :disabled="!isEditing" />
+            </el-form-item>
+            <el-form-item label="日期">
+              <el-date-picker v-model="foodInfoDetail.date" type="date" placeholder="请选择日期" style="width: 100%;" :disabled="!isEditing" />
+            </el-form-item>
+            <el-form-item label="制造商">
+              <el-input v-model="foodInfoDetail.manufacturer" placeholder="请输入制造商" :disabled="!isEditing" />
+            </el-form-item>
+            <el-form-item label="批次号">
+              <el-input v-model="foodInfoDetail.batch_num" placeholder="请输入批次号" :disabled="!isEditing" />
+            </el-form-item>
+            <el-form-item label="图片">
+                <div v-if="foodInfoDetail.photo_url" style="margin-top: 10px;">
+                  <img :src="foodInfoDetail.photo_url" alt="图片" style="width: 200px; height: 200px; margin-right: 10px;" />
+                </div>
+            </el-form-item>
+          </el-form>
+        </div>
+        <el-container class="button">
+          <el-button type="primary" @click="submitForm" v-show="!isEditing">提交</el-button>
+          <el-button type="info" @click="startEditing" v-show="!isEditing">编辑</el-button>
+          <el-button type="success" @click="submitForm" v-show="isEditing">保存</el-button>
+          <el-button type="info" @click="cancelEditing" v-show="isEditing">取消编辑</el-button>
+          <el-button type="danger" @click="deleteInfo">删除</el-button>
+        </el-container>
       </el-card>
     </el-main>
   </el-container>
@@ -177,5 +230,22 @@ const deleteInfo = () => {
   max-width: 1000px;
   box-shadow: 0 4px 12px rgba(53, 4, 4, 0.1);
   background-color: #f9fafc;
+}
+
+.input,
+.textarea,
+.file-input {
+  width: 95%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.button{
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+  gap: 10px;
 }
 </style>
