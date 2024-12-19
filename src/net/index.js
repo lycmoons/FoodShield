@@ -72,7 +72,7 @@ function getTokenHeader(){
 // 当检测到 token 无效时，会跳转到登录界面，要求重新登录
 
 // get 请求
-function get(url, success){
+function getWithToken(url, success){
     const header = getTokenHeader()
     if(!header){
         // token 无效，不能发送本次请求
@@ -98,7 +98,7 @@ function get(url, success){
 }
 
 // post 请求
-function post(url, data, success){
+function postWithToken(url, data, success){
     const header = getTokenHeader()
     if(!header){
         // token 无效，不能发送本次请求
@@ -123,4 +123,38 @@ function post(url, data, success){
     })
 }
 
-export{ saveToken, removeToken, getToken, getRole, get, post }
+// 封装不需要 token 的 GET 请求和 POST 请求
+
+// get 请求
+function get(url, success){
+    axios.get(url).then(({data}) => {
+        if(data.code === 200){  // 服务器处理成功
+            success(data.data)
+        }
+        else{   // 服务器处理失败
+            console.warn(`请求地址：${url}，状态码：${data.code}，错误信息：${data.message}`)
+            ElMessage.warning(data.message)
+        }
+    }).catch(err => {  // 连接失败
+        console.warn(err)
+        ElMessage.warning('发生了一些错误，请联系管理员')
+    })
+}
+
+// post 请求
+function post(url, data, success){
+    axios.post(url, data).then(({data}) => {
+        if(data.code === 200){  // 服务器处理成功
+            success(data.data)
+        }
+        else{   // 服务器处理失败
+            console.warn(`请求地址：${url}，状态码：${data.code}，错误信息：${data.message}`)
+            ElMessage.warning(data.message)
+        }
+    }).catch(err => {  // 连接失败
+        console.warn(err)
+        ElMessage.warning('发生了一些错误，请联系管理员')
+    })
+}
+
+export{ saveToken, removeToken, getToken, getRole, get, post, getWithToken, postWithToken }

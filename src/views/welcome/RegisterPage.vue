@@ -2,7 +2,7 @@
 import {reactive, ref} from "vue";
 import { User, Message, Lock, Clock } from "@element-plus/icons-vue"
 import router from "@/router/index.js";
-import {post} from "@/net/index.js"
+import {postWithToken} from "@/net/index.js"
 import {ElMessage} from "element-plus";
 import axios from "axios";
 import {validateCode, validateEmail, validatePassword, validateUsername} from "@/validate/index.js";

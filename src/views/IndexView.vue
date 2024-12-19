@@ -1,27 +1,56 @@
 <script setup>
+import {ref} from "vue";
 import router from "@/router/index.js";
-import {get, removeToken} from "@/net/index.js";
-import {ElMessage} from "element-plus";
 
-function logoutSuccess(data){
-  removeToken()
-  ElMessage.success('退出登录成功')
-  router.push("/")
+let activeMenu = ref('/index')
+
+function handleSelect(index){
+  router.push(index)
+  activeMenu = index
 }
-
-function userLogout(){
-  get('/api/auth/logout', logoutSuccess)
-}
-
 </script>
 
-<template>
 
-  <div>
-    <el-button @click="userLogout">退出登录</el-button>
+
+<template>
+  <div class="container">
+    <div class="navigation">
+      <el-menu :default-active="activeMenu"
+               @select="handleSelect"
+               mode="horizontal"
+               style="display: flex; justify-content: space-evenly"
+               router>
+        <el-menu-item index="/index">首页</el-menu-item>
+        <el-menu-item index="/index/post">留言板</el-menu-item>
+        <el-menu-item index="/index/trace">食品溯源</el-menu-item>
+        <el-menu-item index="/index/report">食品报告</el-menu-item>
+        <el-menu-item index="/index/complaint">投诉</el-menu-item>
+        <el-menu-item index="/index/account">我的</el-menu-item>
+      </el-menu>
+    </div>
+
+    <div class="content">
+      <router-view style="margin-top: 50px"></router-view>
+    </div>
   </div>
 </template>
 
-<style scoped>
 
+
+<style scoped>
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.navigation {
+  flex: 1;
+  width: 100%;
+}
+
+.content {
+  flex: 14;
+  width: 100%;
+}
 </style>

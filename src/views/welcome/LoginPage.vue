@@ -28,8 +28,14 @@
     saveToken(data.token, data.expire, data.role, form.remember)
 
     // 进入主界面
-    ElMessage.success(`登录成功，欢迎 ${data.username}`)
-    router.push('/index')
+    if (data.role === 'user') {
+      ElMessage.success(`登录成功，欢迎 ${data.username}`)
+      router.push('/index')
+    }
+    else if (data.role === 'admin') {
+      ElMessage.success('管理员登录成功')
+      router.push('/admin')
+    }
   }
 
   function userLogin(){
