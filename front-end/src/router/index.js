@@ -112,7 +112,149 @@ const router = createRouter({
         {
             path: '/admin',
             name: 'admin',
-            component: () => import('@/views/AdminView.vue')
+            component: () => import('@/views/AdminView.vue'),
+            children: [
+                //食品信息管理界面
+                {
+                    path: 'foodinfomanage',
+                    name: 'foodinfomanage',
+                    component: () => import('@/views/admin/FoodInfoManagePage.vue'),
+                    children: [
+                        {
+                            path: 'foodinfolist',
+                            name: 'foodinfolist',
+                            component: () => import('@/views/admin/foodinfo/FoodInfoListPage.vue'),
+                        },
+                        {
+                            path: 'foodinfodetail',
+                            name: 'foodinfodetail',
+                            component: () => import('@/views/admin/foodinfo/FoodInfoDetailPage.vue'),
+                        },
+                        {
+                            path: 'inputfoodinfo',
+                            name: 'inputfoodinfo',
+                            component: () => import('@/views/admin/foodinfo/InputFoodInfoPage.vue'),
+                        },
+                    ]
+                },
+
+                // 用户投诉受理界面
+                {
+                    path: 'complaintmanage',
+                    name: 'complaintmanage',
+                    component: () => import('@/views/admin/ComplaintManagePage.vue'),
+                    children: [
+                        {
+                            path: 'complaintlist',
+                            name: 'complaintlist',
+                            component: () => import('@/views/admin/complaint/ComplaintListPage.vue'),
+                        },
+                        {
+                            path: 'complaintacceptance',
+                            name: 'complaintacceptance',
+                            component: () => import('@/views/admin/complaint/ComplaintAcceptancePage.vue'),
+                        },
+                    ]
+                },
+
+                // 食品报告上传界面
+                {
+                    path: 'reportmanage',
+                    name: 'reportmanage',
+                    component: () => import('@/views/admin/ReportManagePage.vue'),
+                    // children: [
+                    //     {
+                    //         path: 'reportlist',
+                    //         name: 'reportlist',
+                    //         component: () => import('@/views/admin/report/ReportListPage.vue'),
+                    //     },
+                    //     {
+                    //         path: 'reportdetail',
+                    //         name: 'reportdetail',
+                    //         component: () => import('@/views/admin/report/ReportDetailPage.vue'),
+                    //     },
+                    //     {
+                    //         path: 'createreport',
+                    //         name: 'createreport',
+                    //         component: () => import('@/views/admin/report/CreateReportPage.vue'),
+                    //     },
+                    // ]
+                },
+
+                // 推送新闻界面
+                {
+                    path: 'articlemanage',
+                    name: 'articlemanage',
+                    component: () => import('@/views/admin/ArticleManagePage.vue'),
+                    children: [
+                        {
+                            path: 'articlelist',
+                            name: 'articlelist',
+                            component: () => import('@/views/admin/article/ArticleListPage.vue')
+                        },
+                        {
+                            path: 'articledetail',
+                            name: 'articledetail',
+                            component: () => import('@/views/admin/article/ArticleDetailPage.vue')
+                        },
+                        {
+                            path: 'createarticle',
+                            name: 'createarticle',
+                            component: () => import('@/views/admin/article/CreateArticlePage.vue'),
+                        },
+                    ]
+                },
+
+                // 推送知识界面
+                {
+                    path: 'knowledgemanage',
+                    name: 'knowledgemanage',
+                    component: () => import('@/views/admin/ArticleManagePage.vue'),
+                    children: [
+                        {
+                            path: 'knowledgelist',
+                            name: 'knowledgelist',
+                            component: () => import('@/views/admin/knowledge/KnowledgeListPage.vue')
+                        },
+                        {
+                            path: 'knowledgedetail',
+                            name: 'knowledgedetail',
+                            component: () => import('@/views/admin/knowledge/KnowledgeDetailPage.vue')
+                        },
+                        {
+                            path: 'createknowledge',
+                            name: 'createknowledge',
+                            component: () => import('@/views/admin/knowledge/CreateKnowledgePage.vue'),
+                        },
+                    ]
+                },
+
+                // 管理员日志界面
+                {
+                    path: 'log',
+                    name: 'admin-log',
+                    component: () => import('@/views/admin/AdminLogPage.vue'),
+                },
+
+                // 个人信息
+                {
+                    path: 'profile',
+                    name: 'profile',
+                    component: () => import('@/views/admin/AdminProfileManagePage.vue'),
+                    children: [
+                        {
+                            path: 'admin-profile',
+                            name: 'admin-profile',
+                            component: () => import('@/views/admin/adminprofile/AdminProfilePage.vue'),
+                        },
+                        {
+                            path: 'admin-message',
+                            name: 'admin-message',
+                            component: () => import('@/views/admin/adminprofile/AdminMessagePage.vue'),
+                        },
+                    ]
+                },
+            ]
         },
 
         // 新闻的详细显示界面
@@ -154,7 +296,8 @@ router.beforeEach((to, from, next) => {
         }
     }
 
-    else if((to.fullPath.startsWith('/index') || to.fullPath.startsWith('/admin')) && token === null){  // 没登录之前不能访问主界面
+    // 在没登录的情况下访问用户界面或管理员界面，直接跳转到登录界面
+    else if((to.fullPath.startsWith('/index') || to.fullPath.startsWith('/admin')) && token === null){
         next('/')  // 重定向
     }
 
@@ -165,3 +308,4 @@ router.beforeEach((to, from, next) => {
 })
 
 export default router
+

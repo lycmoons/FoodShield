@@ -33,6 +33,9 @@ function sendComment() {
         () => {
           ElMessage.success("评论发送成功");
           form.myComment = "";
+
+          form.comment = []
+          getAllComment()
         }
     );
   }
@@ -211,7 +214,6 @@ function goBack() {
 }
 .comment-input-card .el-form-item {
   margin-bottom: 10px;
-
 }
 
 /* 返回按钮 */

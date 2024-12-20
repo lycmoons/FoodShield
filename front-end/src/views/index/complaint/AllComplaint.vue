@@ -1,6 +1,6 @@
 <script setup>
 
-import {onMounted, reactive} from "vue";
+import {computed, onMounted, reactive} from "vue";
 import {getWithToken} from "@/net/index.js";
 
 function getAllComplaint(){
@@ -10,7 +10,8 @@ function getAllComplaint(){
         id: item.id,
         content: item.content,
         photo_url: item.photo_url,
-        date: (new Date(item.date)).toLocaleString()
+        date: (new Date(item.date)).toLocaleString(),
+        accepted: item.accepted === 'false' ? '未受理' : '已受理'
       })
     }
   })
@@ -31,6 +32,7 @@ let form = reactive({
     <!-- 遍历投诉信息 -->
     <div class="complaint-item" v-for="item in form.complaint" :key="item.id">
       <div class="complaint-date">日期：{{ item.date || '未指定日期'}}</div>
+      <div class="complaint-date">受理：{{ item.accepted }}</div>
       <div class="complaint-content">内容：{{ item.content }}</div>
       <div class="complaint-photo"
            v-for="(photo, index) in item.photo_url"

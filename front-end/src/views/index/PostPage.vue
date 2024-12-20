@@ -72,6 +72,10 @@ function handleSuccess(){
   form.selectedPhoto = []
   form.title = ''
   form.content = ''
+
+  // 刷新帖子推送
+  form.userPost = []
+  getTopPost()
 }
 
 // 页面首次加载时运行

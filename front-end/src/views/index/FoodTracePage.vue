@@ -1,10 +1,11 @@
 <script setup>
 
 import {computed, onMounted, reactive} from "vue";
-import {get} from "@/net/index.js";
+import {getWithToken, postWithToken} from "@/net/index.js";
+import {ElMessage} from "element-plus";
 
 function getAllFood(){
-  get('/api/food/all-food',(data) => {
+  getWithToken('/api/food/all-food',(data) => {
     for (const item of data){
       form.food.push({
         id: item.id,
@@ -12,9 +13,36 @@ function getAllFood(){
         date: (new Date(item.date)).toLocaleString(),
         manufacturer: item.manufacturer,
         batch_num: item.batch_num,
-        photo_url: item.photo_url
+        photo_url: item.photo_url,
+        materialSafety: item.materialSafety,
+        productionSafety: item.productionSafety,
+        processingSafety: item.processingSafety,
+        transportationSafety: item.transportationSafety,
+        subscribed: item.subscribed
       })
     }
+  })
+}
+
+// 订阅
+function subScript(id) {
+  postWithToken('/api/subscription/subscript', {
+    food_id: id
+  }, () => {
+    form.food = []
+    getAllFood()
+    ElMessage.success('订阅成功')
+  })
+}
+
+// 取消订阅
+function undoSubscript(id) {
+  postWithToken('/api/subscription/undo-subscript', {
+    food_id: id
+  }, () => {
+    form.food = []
+    getAllFood()
+    ElMessage.success('取消订阅成功')
   })
 }
 
@@ -76,11 +104,27 @@ const toggleExpand = (id) => {
           <p><strong>生产日期：</strong>{{ item.date || "暂无信息" }}</p>
           <p><strong>生产商：</strong>{{ item.manufacturer }}</p>
           <p><strong>批次号：</strong>{{ item.batch_num }}</p>
+          <p><strong>原料安全：</strong>{{ item.materialSafety }}</p>
+          <p><strong>生产安全：</strong>{{ item.productionSafety }}</p>
+          <p><strong>加工安全：</strong>{{ item.processingSafety }}</p>
+          <p><strong>运输安全：</strong>{{ item.transportationSafety }}</p>
           <img
               :src="item.photo_url"
               alt="食品图片"
               class="food-photo"
           />
+          <el-button type="success"
+                     plain
+                     v-if="item.subscribed === 0"
+                     @click="subScript(item.id)">
+            订阅食品
+          </el-button>
+          <el-button type="danger"
+                     plain
+                     v-if="item.subscribed === 1"
+                     @click="undoSubscript(item.id)">
+            取消订阅
+          </el-button>
         </div>
       </div>
     </div>

@@ -16,6 +16,7 @@ let form = reactive({
   photo_url: JSON.parse(route.params.photo_url),
   date: route.params.date,
 });
+
 </script>
 
 <template>
