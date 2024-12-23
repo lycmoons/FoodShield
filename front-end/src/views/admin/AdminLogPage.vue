@@ -1,10 +1,7 @@
 <script setup>
 import {onMounted, ref} from "vue";
-import { Document } from '@element-plus/icons-vue';
-import router from "@/router/index.js";
-import {post} from "@/net/index.js"
-import {ElMessage} from "element-plus";
-import axios from "axios";
+import {getWithToken} from "@/net/index.js";
+
     
 const adminlogs = ref([]); // 当前页数据
 const pageSize = ref(20); // 每页显示条数
@@ -14,17 +11,23 @@ const loading = ref(false); // 加载状态
 
 // 模拟的总数据，写连接的时候删掉
 const allData = ref([]);
+
+
 const generateData = () => {
   const data = [];
-  for (let i = 1; i <= 50; i++) {
-    data.push({
-      logId: `L${i}`, // 日志ID
-      table_name: `板块${(i % 5) + 1}`,
-      message: `修改的内容 ${i}`, 
-      date: `2024-12-${(i % 30) + 1} 12:00`, // 修改日期
-    });
-  }
-  return data;
+  getWithToken('/api/log/all-log', (response)=>{
+    for (const item of response){
+      data.push({
+        id: item.id,
+        table_name: item.table_name,
+        message: item.message,
+        date: (new Date(item.date)).toLocaleString()
+      })
+    }
+    allData.value = data
+    totalLogs.value = allData.value.length
+    updatePageData()
+  })
 };
 
 // 更新当前页数据
@@ -33,14 +36,12 @@ const updatePageData = () => {
   const end = start + pageSize.value;
   adminlogs.value = allData.value.slice(start, end);
 };
-
 // 监听分页变化
 const handleSizeChange = (size) => {
   pageSize.value = size; // 更新每页条数
   currentPage.value = 1; // 重置到第1页
   updatePageData();
 };
-
 const handleCurrentChange = (page) => {
   currentPage.value = page; // 更新当前页码
   updatePageData();
@@ -48,10 +49,7 @@ const handleCurrentChange = (page) => {
 
 // 初始化数据
 onMounted(() => {
-  allData.value = generateData(); // 生成 50 条数据
-  totalLogs.value = allData.value.length; // 设置总条数
-  updatePageData(); // 更新当前页数据
-  // TODO: fetchLogs
+  generateData()
 });
 </script>
     
@@ -64,7 +62,7 @@ onMounted(() => {
 
     <el-main>
       <el-table :data="adminlogs" v-loading="loading" border style="width: 100%; height: 700px; overflow-y: auto;" stripe>
-        <el-table-column prop="logId" label="日志ID" sortable width="100" show-overflow-tooltip />
+        <el-table-column prop="id" label="日志ID" sortable width="100" show-overflow-tooltip />
         <el-table-column prop="table_name" label="板块" sortable width="160" show-overflow-tooltip />
         <el-table-column prop="message" label="标题" sortable show-overflow-tooltip />
         <el-table-column prop="date" label="修改日期" sortable width="150" show-overflow-tooltip />

@@ -1,5 +1,4 @@
 package com.lycmoons.service;
-
 import com.lycmoons.entity.vo.request.AskForCodeVO;
 
 public interface EmailService {

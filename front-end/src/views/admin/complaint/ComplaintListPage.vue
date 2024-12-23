@@ -2,7 +2,7 @@
 import {onMounted, ref} from "vue";
 // import { UserFilled, Document, Message, PieChart, SwitchButton } from '@element-plus/icons-vue';
 import router from "@/router/index.js";
-import {post} from "@/net/index.js"
+import {get, post} from "@/net/index.js"
 import {ElMessage} from "element-plus";
 import axios from "axios";
 
@@ -12,36 +12,41 @@ const pageSize = ref(20); // 每页显示条数
 const currentPage = ref(1); // 当前页码
 const totalLogs = ref(0); // 数据总条数
 const loading = ref(false); // 加载状态
-
-// 模拟的总数据，写连接的时候删掉
 const allData = ref([]);
+
 const generateData = () => {
-  const data = [];
-  for (let i = 1; i <= 50; i++) {
-    data.push({
-      id: `C${i}`,
-      title: `投诉${i + 1}`,
-      accepted: `已处理`, // TODO: 改成后端发来的字符串
-      complaintTime: `2024-12-${(i % 30) + 1} 12:00`,
-      lastProcessTime: `2024-12-${(i % 30) + 1} 13:00`, // TODO: 可以改一下名字
-    });
-  }
-  return data;
+  const data = []
+  get('/api/complaint/total-complaint', (response)=>{
+    for(const item of response){
+      data.push({
+        id: item.id,
+        content: item.content,
+        photo_url: item.photo_url,
+        date: (new Date(item.date)).toLocaleString(),
+        accepted: item.accepted
+      })
+    }
+    allData.value = data
+    totalLogs.value = allData.value.length
+    updatePageData()
+  })
 };
 
 // 初始化数据
 onMounted(() => {
-  allData.value = generateData(); // 生成 50 条数据
-  totalLogs.value = allData.value.length; // 设置总条数
-  updatePageData(); // 更新当前页数据
+  generateData()
 });
 
 // 跳转到投诉受理页面并传递参数
 const goToComplaintAcceptance = (complaint) => {
   router.push({
-    path: "/admin/complaintmanage/complaintacceptance",
+    path: "/admin/complaintManage/complaintAcceptance",
     query: {
       id: complaint.id,
+      accepted: complaint.accepted,
+      date: complaint.date,
+      content: complaint.content,
+      photo_url: complaint.photo_url,
     },
   });
 };
@@ -78,9 +83,8 @@ const handleCurrentChange = (page) => {
       <!-- 投诉列表 -->
       <el-table :data="complaints" v-loading="loading" border style="width: 100%; height: 700px; overflow-y: auto;">
         <el-table-column prop="id" label="投诉ID" sortable width="100" show-overflow-tooltip />
-        <el-table-column prop="title" label="投诉标题" sortable show-overflow-tooltip />
-        <el-table-column prop="complaintTime" label="投诉时间" sortable width="180" show-overflow-tooltip />
-        <el-table-column prop="lastProcessTime" label="最后处理时间" sortable width="180" show-overflow-tooltip />
+        <el-table-column prop="content" label="投诉内容" sortable show-overflow-tooltip />
+        <el-table-column prop="date" label="投诉时间" sortable width="180" show-overflow-tooltip />
         <el-table-column prop="accepted" label="状态" sortable width="120" show-overflow-tooltip />
         <el-table-column label="操作" width="150">
           <template #default="scope">

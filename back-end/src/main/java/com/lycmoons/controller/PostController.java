@@ -1,8 +1,6 @@
 package com.lycmoons.controller;
-
 import com.lycmoons.entity.RestBean;
 import com.lycmoons.entity.dto.PostDTO;
-import com.lycmoons.entity.vo.response.NewsVO;
 import com.lycmoons.entity.vo.response.PostVO;
 import com.lycmoons.service.PhotoService;
 import com.lycmoons.service.PostService;
@@ -10,7 +8,6 @@ import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
@@ -55,5 +52,15 @@ public class PostController {
         } catch (IOException e) {
             return RestBean.failure(400, e.getMessage());
         }
+    }
+
+    // 获取所有的帖子
+    @GetMapping("/all-post")
+    public RestBean<List<PostVO>> getAllPost() {
+        List<PostVO> allPost = postService.getAllPost();
+        if (allPost == null) {
+            return RestBean.failure(400, "帖子推送失败");
+        }
+        return RestBean.success(allPost);
     }
 }

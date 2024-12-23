@@ -3,7 +3,7 @@ import { reactive, ref } from "vue";
 import { Close } from '@element-plus/icons-vue';
 import { ElMessage } from "element-plus";
 import router from "@/router/index.js";
-import { post } from "@/net/index.js";
+import {post, postWithMultipart} from "@/net/index.js";
 
 // 表单数据
 const form = reactive({
@@ -66,13 +66,15 @@ const submitForm = () => {
       const formData = new FormData();
       formData.append("title", form.title);
       formData.append("content", form.content);
-      uploadedFiles.value.forEach((file, index) => {
-        formData.append(`photo_${index + 1}`, file);
+      uploadedFiles.value.forEach((file) => {
+        formData.append('image', file);
       });
 
-      console.log("提交的表单数据：", form);
-      console.log("提交的文件：", uploadedFiles.value);
-      ElMessage.success("提交成功");
+      postWithMultipart('/api/news/add-news', formData, ()=>{
+        ElMessage.success('新闻录入成功')
+        router.push('/admin/articleManage/articleList')
+      })
+
     } else {
       ElMessage.error("请填写完整的表单信息");
     }

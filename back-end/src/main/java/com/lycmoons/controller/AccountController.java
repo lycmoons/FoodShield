@@ -1,5 +1,4 @@
 package com.lycmoons.controller;
-
 import com.lycmoons.entity.RestBean;
 import com.lycmoons.entity.vo.request.RegisterVO;
 import com.lycmoons.entity.vo.request.ResetPasswordVO;

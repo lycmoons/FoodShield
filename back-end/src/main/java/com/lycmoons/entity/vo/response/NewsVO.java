@@ -1,9 +1,7 @@
 package com.lycmoons.entity.vo.response;
-
 import com.lycmoons.entity.dto.NewsDTO;
 import com.lycmoons.util.Convertor;
 import lombok.Data;
-
 import java.util.List;
 
 @Data

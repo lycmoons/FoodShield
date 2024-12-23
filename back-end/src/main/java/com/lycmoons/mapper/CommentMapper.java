@@ -1,5 +1,4 @@
 package com.lycmoons.mapper;
-
 import com.lycmoons.entity.dto.CommentDTO;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;

@@ -1,5 +1,4 @@
 package com.lycmoons.entity.vo.response;
-
 import com.lycmoons.entity.dto.MessageDTO;
 import com.lycmoons.util.Convertor;
 import lombok.Data;

@@ -1,5 +1,4 @@
 package com.lycmoons.service.impl;
-
 import com.lycmoons.entity.dto.PostDTO;
 import com.lycmoons.entity.vo.response.PostVO;
 import com.lycmoons.mapper.AccountMapper;
@@ -7,7 +6,6 @@ import com.lycmoons.mapper.PostMapper;
 import com.lycmoons.service.PostService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +26,21 @@ public class PostServiceImpl implements PostService {
 
         List<PostVO> postVOS = new ArrayList<>();
         for (PostDTO postDTO : topPost) {
+            String username = accountMapper.findAccountById(postDTO.getUser_id()).getUsername();
+            postVOS.add(new PostVO(postDTO, username));
+        }
+        return postVOS;
+    }
+
+    @Override
+    public List<PostVO> getAllPost() {
+        List<PostDTO> allPost = postMapper.getAllPost();
+        if (allPost == null || allPost.isEmpty()) {
+            return null;
+        }
+
+        List<PostVO> postVOS = new ArrayList<>();
+        for (PostDTO postDTO : allPost) {
             String username = accountMapper.findAccountById(postDTO.getUser_id()).getUsername();
             postVOS.add(new PostVO(postDTO, username));
         }

@@ -41,6 +41,7 @@ public class SecurityConfig {
                 // 请求拦截
                 .authorizeHttpRequests(conf -> conf
                         .requestMatchers("/api/auth/**",
+                                         "/api/log/**",
                                          "/api/complaint/**",
                                          "/api/comment/**",
                                          "/api/report/**",

@@ -5,6 +5,7 @@ import { useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
 import axios from "axios";
 import router from "@/router/index.js";
+import {postWithMultipart} from "@/net/index.js";
 
 // 表单数据
 const form = reactive({
@@ -13,6 +14,10 @@ const form = reactive({
   manufacturer: "",
   batch_num: "",
   image: null,
+  materialSafety: "",
+  productionSafety: "",
+  processingSafety: "",
+  transportationSafety: "",
 });
 
 // 表单校验规则
@@ -22,33 +27,50 @@ const rules = {
   manufacturer: [{ required: true, message: '请输入制造商', trigger: 'blur' }],
   batch_num: [{ required: true, message: '请输入批次号', trigger: 'blur' }],
   image: [{ required: true, message: '请上传图片', trigger: 'change' }],
+  materialSafety: [{ required: true, message: '请输入原料安全评级', trigger: 'blur' }],
+  productionSafety: [{ required: true, message: '请输入生产安全评级', trigger: 'blur' }],
+  processingSafety: [{ required: true, message: '请输入加工安全评级', trigger: 'blur' }],
+  transportationSafety: [{ required: true, message: '请输入运输安全评级', trigger: 'blur' }],
 };
 
 const formRef = ref();
 
+// 状态选项
+const statusOptions = [
+  { label: "high-level", value: "high-level" },
+  { label: "low-level", value: "low-level" },
+];
+
 // 提交表单
 const submitForm = () => {
+
   formRef.value.validate((valid) => {
-    if (valid) {
-      const formData = new FormData();
-      formData.append("name", form.name);
-      formData.append("date", form.date);
-      formData.append("manufacturer", form.manufacturer);
-      formData.append("batch_num", form.batch_num);
-      formData.append("image", form.image);
-      console.log(form)
-      axios.post('/api/food', formData) // 不知道是啥
-        .then(response => {
-          ElMessage.success('食品信息已提交！');
-          router.push('/'); 
+    if (valid){
+      if (form.materialSafety===''||form.productionSafety===''||form.processingSafety===''||form.transportationSafety===''){
+        ElMessage.warning('请完善表单内容')
+      }
+      else {
+        const formData = new FormData()
+        formData.append('name', form.name)
+        formData.append('date', form.date.toLocaleString())
+        formData.append('manufacturer', form.manufacturer)
+        formData.append('batch_num', form.batch_num)
+        formData.append('materialSafety', form.materialSafety)
+        formData.append('productionSafety', form.productionSafety)
+        formData.append('processingSafety', form.processingSafety)
+        formData.append('transportationSafety', form.transportationSafety)
+        formData.append('image', form.image)
+
+        postWithMultipart('/api/food/add-food', formData, ()=>{
+          ElMessage.success('食品信息录入成功')
+          router.push('/admin/foodinfoManage/foodinfoList')
         })
-        .catch(error => {
-          ElMessage.error('提交失败，请重试！');
-        });
-    } else {
-      ElMessage.error('请填写完整的表单信息');
+      }
     }
-  });
+    else {
+      ElMessage.warning('请完善表单内容')
+    }
+  })
 };
 
 // 重置表单
@@ -68,7 +90,10 @@ const resetForm = () => {
 
 // 处理图片选择
 const handleFileChange = (event) => {
-  form.image = event.target.files;
+  const file = event.target.files[0]
+  if (file) {
+    form.image = file
+  }
 }
 </script>
 
@@ -93,7 +118,31 @@ const handleFileChange = (event) => {
             <el-input v-model="form.manufacturer" placeholder="请输入制造商" />
           </el-form-item>
           <el-form-item label="批次号" prop="batch_num">
-            <el-input v-model="form.batch_num" placeholder="请输入批次号" />
+            <el-input type="number" v-model="form.batch_num" placeholder="请输入批次号" />
+          </el-form-item>
+          <el-form-item label="原料安全评级">
+            <el-select v-model="form.materialSafety" placeholder="请输入原料安全评级" style="width: 100%;">
+              <el-option
+                v-for="option in statusOptions" :key="option.value" :label="option.label" :value="option.value" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="生产安全评级">
+            <el-select v-model="form.productionSafety" placeholder="请输入生产安全评级" style="width: 100%;">
+              <el-option
+                v-for="option in statusOptions" :key="option.value" :label="option.label" :value="option.value" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="加工安全评级">
+            <el-select v-model="form.processingSafety" placeholder="请输入加工安全评级" style="width: 100%;">
+              <el-option
+                v-for="option in statusOptions" :key="option.value" :label="option.label" :value="option.value" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="运输安全评级">
+            <el-select v-model="form.transportationSafety" placeholder="请输入运输安全评级" style="width: 100%;">
+              <el-option
+                v-for="option in statusOptions" :key="option.value" :label="option.label" :value="option.value" />
+            </el-select>
           </el-form-item>
           <el-form-item label="图片上传" prop="image">
             <input type="file" @change="handleFileChange" accept="image/*" class="file-input" />

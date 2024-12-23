@@ -1,10 +1,7 @@
 package com.lycmoons.entity.vo.response;
-
 import com.lycmoons.entity.dto.CommentDTO;
 import com.lycmoons.util.Convertor;
 import lombok.Data;
-
-import java.util.Date;
 
 @Data
 public class CommentVO {

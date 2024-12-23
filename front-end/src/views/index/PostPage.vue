@@ -1,6 +1,6 @@
 <script setup>
 import {onMounted, reactive} from "vue";
-import {get, getToken} from "@/net/index.js";
+import {get, getToken, postWithMultipart} from "@/net/index.js";
 import {ElMessage} from "element-plus";
 import axios from "axios";
 import router from "@/router/index.js";
@@ -20,6 +20,10 @@ function getTopPost(){
   })
 }
 
+function getAllPost(){
+  router.push('/all-post')
+}
+
 function sendPost(){
   if (form.title === '' || form.title === null){
     ElMessage.warning('标题不能为空')
@@ -31,36 +35,15 @@ function sendPost(){
     ElMessage.warning('必须附加至少一张图片')
   }
   else {
-    const token = getToken()
-    if (token === null){
-      // token 无效，不能发送本次请求
-      ElMessage.warning('登录状态过期，请重新登录')
-      router.push('/')
-      return
-    }
-
-    const formData = new FormData();
+    const formData = new FormData()
     form.selectedPhoto.forEach((file) => {
-      formData.append('files', file); // 将文件加入到FormData
-    });
-    formData.append('title', form.title);
-    formData.append('content', form.content);
-    axios.post('/api/post/send-post',formData,{
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        'Authorization': `Bearer ${token}`
-      }
-    }).then(({data}) => {
-      if(data.code === 200){  // 服务器处理成功
-        handleSuccess()
-      }
-      else{   // 服务器处理失败
-        console.warn(`请求地址：/api/post/send-post，状态码：${data.code}，错误信息：${data.message}`)
-        ElMessage.warning(data.message)
-      }
-    }).catch(err => {
-      console.warn(err)
-      ElMessage.warning('发生了一些错误，请联系管理员')
+      formData.append('files', file)
+    })
+    formData.append('title', form.title)
+    formData.append('content', form.content)
+
+    postWithMultipart('/api/post/send-post', formData, () => {
+      handleSuccess()
     })
   }
 }
@@ -133,7 +116,7 @@ function showPostDetail(post){
         </div>
       </div>
     </div>
-    <el-button style="margin-top: 20px" class="view-more">查看更多</el-button>
+    <el-button @click="getAllPost" style="margin-top: 20px" class="view-more">查看更多</el-button>
 
     <el-divider style="margin-top: 50px;margin-bottom: 50px">我要发帖</el-divider>
 

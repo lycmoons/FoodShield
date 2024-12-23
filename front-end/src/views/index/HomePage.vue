@@ -32,6 +32,14 @@ function getTopKnowledge() {
   });
 }
 
+function getAllNews(){
+  router.push('/all-news')
+}
+
+function getAllKnowledge(){
+  router.push('/all-knowledge')
+}
+
 // 页面首次加载时运行
 onMounted(() => {
   getTopNews();
@@ -87,7 +95,7 @@ let form = reactive({
           </div>
         </button>
       </div>
-      <el-button class="view-more-btn">查看更多</el-button>
+      <el-button @click="getAllNews" class="view-more-btn">查看更多</el-button>
     </div>
 
     <el-divider></el-divider>
@@ -106,7 +114,7 @@ let form = reactive({
           </div>
         </button>
       </div>
-      <el-button class="view-more-btn">查看更多</el-button>
+      <el-button @click="getAllKnowledge" class="view-more-btn">查看更多</el-button>
     </div>
   </div>
 </template>

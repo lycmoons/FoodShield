@@ -1,10 +1,7 @@
 <script setup>
-
 import {reactive} from "vue";
 import {ElMessage} from "element-plus";
-import {getToken} from "@/net/index.js";
-import router from "@/router/index.js";
-import axios from "axios";
+import {postWithMultipart} from "@/net/index.js";
 
 function sendComplaint(){
   if(form.content===''||form.content===null){
@@ -14,36 +11,14 @@ function sendComplaint(){
     ElMessage.warning('必须上传投诉的图片')
   }
   else {
-    const token = getToken()
-    if (token === null){
-      // token 无效，不能发送本次请求
-      ElMessage.warning('登录状态过期，请重新登录')
-      router.push('/')
-      return
-    }
-
-    const formData = new FormData();
+    const formData = new FormData()
     form.selectedPhoto.forEach((file) => {
-      formData.append('files', file); // 将文件加入到FormData
-    });
-    formData.append('content', form.content);
+      formData.append('files', file)
+    })
+    formData.append('content', form.content)
 
-    axios.post('/api/complaint/send-complaint',formData,{
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        'Authorization': `Bearer ${token}`
-      }
-    }).then(({data}) => {
-      if(data.code === 200){  // 服务器处理成功
-        handleSuccess()
-      }
-      else{   // 服务器处理失败
-        console.warn(`请求地址：/api/complaint/send-complaint，状态码：${data.code}，错误信息：${data.message}`)
-        ElMessage.warning(data.message)
-      }
-    }).catch(err => {
-      console.warn(err)
-      ElMessage.warning('发生了一些错误，请联系管理员')
+    postWithMultipart('api/complaint/send-complaint', formData, () => {
+      handleSuccess()
     })
   }
 }

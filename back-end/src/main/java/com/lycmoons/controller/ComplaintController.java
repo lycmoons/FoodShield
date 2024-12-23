@@ -1,8 +1,7 @@
 package com.lycmoons.controller;
-
 import com.lycmoons.entity.RestBean;
 import com.lycmoons.entity.dto.ComplaintDTO;
-import com.lycmoons.entity.dto.PostDTO;
+import com.lycmoons.entity.vo.request.AcceptComplaintVO;
 import com.lycmoons.entity.vo.response.ComplaintVO;
 import com.lycmoons.service.ComplaintService;
 import com.lycmoons.service.PhotoService;
@@ -10,7 +9,6 @@ import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
@@ -48,7 +46,7 @@ public class ComplaintController {
             String photo_url = photoService.storePhoto(files);
             Integer userId = (Integer) request.getAttribute("id");
             if(content!=null&&photo_url!=null&&userId!=null){
-                String msg = complaintService.addComplaint(new ComplaintDTO(null, userId, content, photo_url, new Date()));
+                String msg = complaintService.addComplaint(new ComplaintDTO(null, userId, content, photo_url, new Date(), "false"));
                 if(msg==null){
                     return RestBean.success(null);
                 }
@@ -57,5 +55,31 @@ public class ComplaintController {
         } catch (IOException e) {
             return RestBean.failure(400, e.getMessage());
         }
+    }
+
+    // 管理员获取所有用户的投诉信息
+    @GetMapping("/total-complaint")
+    public RestBean<List<ComplaintVO>> getAllComplaint() {
+        List<ComplaintVO> complaints = complaintService.getAllComplaint();
+        if (complaints == null) {
+            return RestBean.failure(400, "未找到任何投诉信息");
+        }
+        return RestBean.success(complaints);
+    }
+
+    // 管理员回复某个投诉
+    @PostMapping("/accept-complaint")
+    public RestBean<Void> acceptComplaint(HttpServletRequest request,
+                                          @RequestBody AcceptComplaintVO vo){
+        Integer adminId = (Integer) request.getAttribute("id");
+        if (adminId == null) {
+            return RestBean.failure(400, "身份认证失败");
+        }
+
+        String msg = complaintService.acceptComplaint(vo, adminId);
+        if (msg == null) {
+            return RestBean.success(null);
+        }
+        return RestBean.failure(400, msg);
     }
 }

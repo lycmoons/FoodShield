@@ -1,8 +1,6 @@
 package com.lycmoons.service;
-
 import com.lycmoons.entity.vo.request.SendCommentVO;
 import com.lycmoons.entity.vo.response.CommentVO;
-
 import java.util.List;
 
 public interface CommentService {

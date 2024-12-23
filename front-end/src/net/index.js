@@ -157,4 +157,34 @@ function post(url, data, success){
     })
 }
 
-export{ saveToken, removeToken, getToken, getRole, get, post, getWithToken, postWithToken }
+// 使用 multipart/form-data 形式传输的数据
+// 也携带 token
+function postWithMultipart(url, data, success){
+    const token = getToken()
+    if(!token){
+        // token 无效，不能发送本次请求
+        ElMessage.warning('登录状态过期，请重新登录')
+        router.push('/')
+        return
+    }
+
+    axios.post(url, data, {
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': "multipart/form-data"
+        }
+    }).then(({data}) => {
+        if(data.code === 200){  // 服务器处理成功
+            success(data.data)
+        }
+        else{   // 服务器处理失败
+            console.warn(`请求地址：${url}，状态码：${data.code}，错误信息：${data.message}`)
+            ElMessage.warning(data.message)
+        }
+    }).catch(err => {  // 连接失败
+        console.warn(err)
+        ElMessage.warning('发生了一些错误，请联系管理员')
+    })
+}
+
+export{ saveToken, postWithMultipart, removeToken, getToken, getRole, get, post, getWithToken, postWithToken }

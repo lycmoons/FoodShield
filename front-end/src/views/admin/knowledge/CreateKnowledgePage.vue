@@ -3,14 +3,14 @@ import { reactive, ref } from "vue";
 import { Close } from '@element-plus/icons-vue';
 import { ElMessage } from "element-plus";
 import router from "@/router/index.js";
-import { post } from "@/net/index.js";
+import {post, postWithMultipart} from "@/net/index.js";
 
 // 表单数据
 const form = reactive({
   title: "",
   content: "",
   category: "",
-  photo_url: "", // 存储上传的图片文件对象
+  photo_url: [],
 });
 
 const categories = ref(["商超", "食安信息化", "健康", "餐饮", "零食"]);
@@ -71,13 +71,16 @@ const submitForm = () => {
       formData.append("title", form.title);
       formData.append("content", form.content);
       formData.append("category", form.category);
-      uploadedFiles.value.forEach((file, index) => {
-        formData.append(`photo_${index + 1}`, file);
-      });
+      uploadedFiles.value.forEach((file) => {
+        formData.append('image', file);
+      })
 
-      console.log("提交的表单数据：", form);
-      console.log("提交的文件：", uploadedFiles.value);
-      ElMessage.success("提交成功");
+      postWithMultipart('/api/knowledge/add-knowledge', formData, () => {
+        ElMessage.success('知识录入成功')
+        router.push('/admin/knowledgeManage/knowledgeList')
+      })
+
+
     } else {
       ElMessage.error("请填写完整的表单信息");
     }

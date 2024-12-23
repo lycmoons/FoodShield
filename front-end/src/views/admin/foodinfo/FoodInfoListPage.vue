@@ -7,14 +7,11 @@ import {ElMessageBox, ElMessage} from "element-plus";
 import axios from "axios";
     
 const foodInfos = ref([]);
-
 const selectedFoodInfos = ref([]);
 const pageSize = ref(20); // 每页显示条数
 const currentPage = ref(1); // 当前页码
 const totalLogs = ref(0); // 数据总条数
 const loading = ref(false); // 加载状态
-
-// 模拟的总数据，写连接的时候删掉
 const allData = ref([]);
 
 
@@ -35,21 +32,21 @@ const generateData = () => {
         transportationSafety: item.transportationSafety
       })
     }
-    foodInfos.value = data
-    totalLogs.value = foodInfos.value.length
+    allData.value = data
+    totalLogs.value = allData.value.length
+    updatePageData()
   })
 };
 
 // 初始化数据
 onMounted(() => {
   generateData()
-  updatePageData(); // 更新当前页数据
 });
 
 // 跳转到食品信息详细页面并传递参数
 const goToFoodInfoDetail = (foodInfo) => {
   router.push({
-    path: "/admin/foodinfomanage/foodinfodetail",
+    path: "/admin/foodinfoManage/foodinfoDetail",
     query: {
       id: foodInfo.id,
       name: foodInfo.name,
@@ -97,7 +94,6 @@ function deleteSelectedFoodInfos(){
       ElMessage.success("选中的食品信息已删除！");
       selectedFoodInfos.value = []
       generateData()
-      updatePageData()
     })
 
   }).catch(() => {

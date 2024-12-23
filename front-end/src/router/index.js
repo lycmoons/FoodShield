@@ -116,23 +116,23 @@ const router = createRouter({
             children: [
                 //食品信息管理界面
                 {
-                    path: 'foodinfomanage',
-                    name: 'foodinfomanage',
+                    path: 'foodinfoManage',
+                    name: 'foodinfoManage',
                     component: () => import('@/views/admin/FoodInfoManagePage.vue'),
                     children: [
                         {
-                            path: 'foodinfolist',
-                            name: 'foodinfolist',
+                            path: 'foodinfoList',
+                            name: 'foodinfoList',
                             component: () => import('@/views/admin/foodinfo/FoodInfoListPage.vue'),
                         },
                         {
-                            path: 'foodinfodetail',
-                            name: 'foodinfodetail',
+                            path: 'foodinfoDetail',
+                            name: 'foodinfoDetail',
                             component: () => import('@/views/admin/foodinfo/FoodInfoDetailPage.vue'),
                         },
                         {
-                            path: 'inputfoodinfo',
-                            name: 'inputfoodinfo',
+                            path: 'inputFoodinfo',
+                            name: 'inputFoodinfo',
                             component: () => import('@/views/admin/foodinfo/InputFoodInfoPage.vue'),
                         },
                     ]
@@ -140,18 +140,18 @@ const router = createRouter({
 
                 // 用户投诉受理界面
                 {
-                    path: 'complaintmanage',
-                    name: 'complaintmanage',
+                    path: 'complaintManage',
+                    name: 'complaintManage',
                     component: () => import('@/views/admin/ComplaintManagePage.vue'),
                     children: [
                         {
-                            path: 'complaintlist',
-                            name: 'complaintlist',
+                            path: 'complaintList',
+                            name: 'complaintList',
                             component: () => import('@/views/admin/complaint/ComplaintListPage.vue'),
                         },
                         {
-                            path: 'complaintacceptance',
-                            name: 'complaintacceptance',
+                            path: 'complaintAcceptance',
+                            name: 'complaintAcceptance',
                             component: () => import('@/views/admin/complaint/ComplaintAcceptancePage.vue'),
                         },
                     ]
@@ -159,47 +159,30 @@ const router = createRouter({
 
                 // 食品报告上传界面
                 {
-                    path: 'reportmanage',
-                    name: 'reportmanage',
+                    path: 'reportManage',
+                    name: 'reportManage',
                     component: () => import('@/views/admin/ReportManagePage.vue'),
-                    // children: [
-                    //     {
-                    //         path: 'reportlist',
-                    //         name: 'reportlist',
-                    //         component: () => import('@/views/admin/report/ReportListPage.vue'),
-                    //     },
-                    //     {
-                    //         path: 'reportdetail',
-                    //         name: 'reportdetail',
-                    //         component: () => import('@/views/admin/report/ReportDetailPage.vue'),
-                    //     },
-                    //     {
-                    //         path: 'createreport',
-                    //         name: 'createreport',
-                    //         component: () => import('@/views/admin/report/CreateReportPage.vue'),
-                    //     },
-                    // ]
                 },
 
                 // 推送新闻界面
                 {
-                    path: 'articlemanage',
-                    name: 'articlemanage',
+                    path: 'articleManage',
+                    name: 'articleManage',
                     component: () => import('@/views/admin/ArticleManagePage.vue'),
                     children: [
                         {
-                            path: 'articlelist',
-                            name: 'articlelist',
+                            path: 'articleList',
+                            name: 'articleList',
                             component: () => import('@/views/admin/article/ArticleListPage.vue')
                         },
                         {
-                            path: 'articledetail',
-                            name: 'articledetail',
+                            path: 'articleDetail',
+                            name: 'articleDetail',
                             component: () => import('@/views/admin/article/ArticleDetailPage.vue')
                         },
                         {
-                            path: 'createarticle',
-                            name: 'createarticle',
+                            path: 'createArticle',
+                            name: 'createArticle',
                             component: () => import('@/views/admin/article/CreateArticlePage.vue'),
                         },
                     ]
@@ -207,23 +190,23 @@ const router = createRouter({
 
                 // 推送知识界面
                 {
-                    path: 'knowledgemanage',
-                    name: 'knowledgemanage',
+                    path: 'knowledgeManage',
+                    name: 'knowledgeManage',
                     component: () => import('@/views/admin/ArticleManagePage.vue'),
                     children: [
                         {
-                            path: 'knowledgelist',
-                            name: 'knowledgelist',
+                            path: 'knowledgeList',
+                            name: 'knowledgeList',
                             component: () => import('@/views/admin/knowledge/KnowledgeListPage.vue')
                         },
                         {
-                            path: 'knowledgedetail',
-                            name: 'knowledgedetail',
+                            path: 'knowledgeDetail',
+                            name: 'knowledgeDetail',
                             component: () => import('@/views/admin/knowledge/KnowledgeDetailPage.vue')
                         },
                         {
-                            path: 'createknowledge',
-                            name: 'createknowledge',
+                            path: 'createKnowledge',
+                            name: 'createKnowledge',
                             component: () => import('@/views/admin/knowledge/CreateKnowledgePage.vue'),
                         },
                     ]
@@ -232,29 +215,38 @@ const router = createRouter({
                 // 管理员日志界面
                 {
                     path: 'log',
-                    name: 'admin-log',
+                    name: 'adminLog',
                     component: () => import('@/views/admin/AdminLogPage.vue'),
                 },
 
                 // 个人信息
                 {
                     path: 'profile',
-                    name: 'profile',
+                    name: 'admin-profile',
                     component: () => import('@/views/admin/AdminProfileManagePage.vue'),
-                    children: [
-                        {
-                            path: 'admin-profile',
-                            name: 'admin-profile',
-                            component: () => import('@/views/admin/adminprofile/AdminProfilePage.vue'),
-                        },
-                        {
-                            path: 'admin-message',
-                            name: 'admin-message',
-                            component: () => import('@/views/admin/adminprofile/AdminMessagePage.vue'),
-                        },
-                    ]
                 },
             ]
+        },
+
+        // 显示所有新闻的界面
+        {
+            path: '/all-news',
+            name: 'all-news',
+            component: () => import('@/views/AllNews.vue')
+        },
+
+        // 显示所有知识的界面
+        {
+            path: '/all-knowledge',
+            name: 'all-knowledge',
+            component: () => import('@/views/AllKnowledge.vue')
+        },
+
+        // 显示所有帖子的界面
+        {
+            path: '/all-post',
+            name: 'all-post',
+            component: () => import('@/views/AllPost.vue')
         },
 
         // 新闻的详细显示界面

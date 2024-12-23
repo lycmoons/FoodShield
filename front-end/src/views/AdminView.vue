@@ -14,7 +14,7 @@ import router from "@/router/index.js";
 import {getWithToken, removeToken} from "@/net/index.js";
 import {ElMessage} from "element-plus";
 
-const faviconSrc = ref('/src/assets/images/foodshield.png');
+const faviconSrc = ref('/src/assets/images/foodSafety.ico');
 
 // 图片加载失败处理方法
 const handleImageError = () => {
@@ -38,7 +38,7 @@ function userLogout() {
 
 <template>
   <el-container class="container">
-    <el-header style="display: flex; justify-content: space-between; align-items: center; height: 8vb;">
+    <el-header style="display: flex; justify-content: space-between; align-items: center; height: 8vb; width: 100%">
       <el-container style="align-items: center;">
         <el-image style="width: 70px; height: 70px;" :src="faviconSrc" fit="cover" alt="图片加载失败"
                   @load="handleImageLoad" @error="handleImageError">
@@ -48,27 +48,13 @@ function userLogout() {
         </el-image>
         <h1 style="font-size: xx-large; font-family: KaiTi;">同济食品安全管理平台</h1>
       </el-container>
-
       <div>
-<!--        个人中心-->
-        <el-button @click="router.push('/admin/profile/admin-profile')" type="info" plain>
+        <!--个人中心-->
+        <el-button @click="router.push('/admin/profile')" type="info" plain>
           <el-icon :size="17">
             <UserFilled/>
           </el-icon>
           个人中心
-        </el-button>
-<!--        信息中心-->
-        <el-button @click="router.push('/admin/profile/admin-message')" type="info" plain>
-          <el-icon :size="17">
-            <Message/>
-          </el-icon>
-          信息中心
-        </el-button>
-        <el-button @click="userLogout" type="warning" plain>
-          <el-icon :size="17">
-            <SwitchButton/>
-          </el-icon>
-          退出登录
         </el-button>
       </div>
     </el-header>
@@ -83,8 +69,8 @@ function userLogout() {
               </el-icon>
               <span>食品信息管理</span>
             </template>
-            <el-menu-item index="1-1" @click="router.push('/admin/foodinfomanage/foodinfolist')">食品信息列表</el-menu-item>
-            <el-menu-item index="1-2" @click="router.push('/admin/foodinfomanage/inputfoodinfo')">食品信息录入</el-menu-item>
+            <el-menu-item index="1-1" @click="router.push('/admin/foodinfoManage/foodinfoList')">食品信息列表</el-menu-item>
+            <el-menu-item index="1-2" @click="router.push('/admin/foodinfoManage/inputFoodinfo')">食品信息录入</el-menu-item>
           </el-sub-menu>
 
           <el-sub-menu index="2">
@@ -94,7 +80,7 @@ function userLogout() {
               </el-icon>
               <span>投诉受理</span>
             </template>
-            <el-menu-item index="2-1" @click="router.push('/admin/complaintmanage/complaintlist')">投诉列表</el-menu-item>
+            <el-menu-item index="2-1" @click="router.push('/admin/complaintManage/complaintList')">投诉列表</el-menu-item>
           </el-sub-menu>
 
           <el-sub-menu index="3">
@@ -104,9 +90,7 @@ function userLogout() {
               </el-icon>
               <span>食品安全数据报告</span>
             </template>
-            <el-menu-item index="3-1" @click="router.push('/admin/reportmanage')">数据报告查看与发布</el-menu-item>
-            <!-- <el-menu-item index="3-1" @click="router.push('/reportmanage/reportlist')">数据报告列表</el-menu-item> -->
-            <!-- <el-menu-item index="3-2" @click="router.push('/reportmanage/createreport')">生成与发布报告</el-menu-item> -->
+            <el-menu-item index="3-1" @click="router.push('/admin/reportManage')">数据报告查看与发布</el-menu-item>
           </el-sub-menu>
 
           <el-sub-menu index="4">
@@ -116,8 +100,8 @@ function userLogout() {
               </el-icon>
               <span>食品安全推文</span>
             </template>
-            <el-menu-item index="4-1" @click="router.push('/admin/articlemanage/articlelist')">推文列表</el-menu-item>
-            <el-menu-item index="4-2" @click="router.push('/admin/articlemanage/createarticle')">推文撰写</el-menu-item>
+            <el-menu-item index="4-1" @click="router.push('/admin/articleManage/articleList')">推文列表</el-menu-item>
+            <el-menu-item index="4-2" @click="router.push('/admin/articleManage/createArticle')">推文撰写</el-menu-item>
           </el-sub-menu>
 
           <el-sub-menu index="5">
@@ -127,8 +111,8 @@ function userLogout() {
               </el-icon>
               <span>食品安全知识库</span>
             </template>
-            <el-menu-item index="5-1" @click="router.push('/admin/knowledgemanage/knowledgelist')">知识库列表</el-menu-item>
-            <el-menu-item index="5-2" @click="router.push('/admin/knowledgemanage/createknowledge')">知识库撰写</el-menu-item>
+            <el-menu-item index="5-1" @click="router.push('/admin/knowledgeManage/knowledgeList')">知识库列表</el-menu-item>
+            <el-menu-item index="5-2" @click="router.push('/admin/knowledgeManage/createKnowledge')">知识库撰写</el-menu-item>
           </el-sub-menu>
 
           <el-sub-menu index="6">
@@ -158,7 +142,7 @@ function userLogout() {
 .container {
   min-height: 100vb;
   height: 100%;
-  width: 160vb;
+  width: 100%;
   border: 2px solid #dcdfe6;
 }
 

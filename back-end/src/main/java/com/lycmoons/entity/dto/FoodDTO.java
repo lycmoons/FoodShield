@@ -1,8 +1,6 @@
 package com.lycmoons.entity.dto;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
 import java.util.Date;
 
 @Data
@@ -14,4 +12,8 @@ public class FoodDTO {
     String manufacturer;
     Integer batch_num;
     String photo_url;
+    String materialSafety;
+    String productionSafety;
+    String processingSafety;
+    String transportationSafety;
 }

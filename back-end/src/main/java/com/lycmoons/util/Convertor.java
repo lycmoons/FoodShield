@@ -1,9 +1,5 @@
 package com.lycmoons.util;
-
-import com.lycmoons.mapper.AccountMapper;
-import jakarta.annotation.Resource;
-import org.springframework.stereotype.Component;
-
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -26,6 +22,12 @@ public class Convertor {
         }
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         return dateFormat.format(date);
+    }
+
+    // 将 String 类型数据转化为 Date 类型数据
+    public static Date convertDateString(String date) throws ParseException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        return dateFormat.parse(date);
     }
 
     // 拼接图片的 url

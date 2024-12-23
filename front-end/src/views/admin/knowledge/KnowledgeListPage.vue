@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, ref, watch } from "vue";
 import router from "@/router/index.js";
-import {post} from "@/net/index.js"
+import {get, post, postWithToken} from "@/net/index.js"
 import {ElMessageBox, ElMessage} from "element-plus";
 import axios from "axios";
     
@@ -14,27 +14,32 @@ const totalLogs = ref(0); // 数据总条数
 const loading = ref(false); // 加载状态
 const selectedCategory = ref(""); // 选中的类别
 const categories = ref(["分类1", "分类2", "分类3"]); // TODO: 看要前端写死还是后端获取
-
-// 模拟的总数据，写连接的时候删掉
 const allData = ref([]);
+
+
 const generateData = () => {
-  const data = [];
-  for (let i = 1; i <= 50; i++) {
-    data.push({
-      id: `F${i}`,
-      title: `食品安全知识${i + 1}`,
-      category: `商超`,
-      date: `2024-12-${(i % 30) + 1} 12:00`,
-    });
-  }
-  return data;
+  const data = []
+  get('/api/knowledge/all-knowledge', (response)=>{
+    for(const item of response){
+      data.push({
+        id: item.id,
+        title: item.title,
+        content: item.content,
+        category: item.category,
+        photo_url: item.photo_url,
+        date: (new Date(item.date)).toLocaleString()
+      })
+    }
+
+    allData.value = data
+    totalLogs.value = allData.value.length
+    updatePageData()
+  })
 };
 
 // 初始化数据
 onMounted(() => {
-  allData.value = generateData(); // 生成 50 条数据
-  totalLogs.value = allData.value.length; // 设置总条数
-  updatePageData(); // 更新当前页数据
+  generateData(); // 生成 50 条数据
 });
 
 // 更新当前页数据
@@ -47,9 +52,14 @@ const updatePageData = () => {
 // 跳转到食品安全知识库文章详细页面并传递参数
 const goToKnowledgeDetail = (knowledge) => {
   router.push({
-    path: "/admin/knowledgemanage/knowledgedetail",
+    path: "/admin/knowledgeManage/knowledgeDetail",
     query: {
       id: knowledge.id,
+      title: knowledge.title,
+      category: knowledge.category,
+      content: knowledge.content,
+      date: knowledge.date,
+      photo_url: JSON.stringify(knowledge.photo_url),
     },
   });
 };
@@ -72,21 +82,20 @@ const deleteSelectedKnowledges = () => {
     confirmButtonText: "确定", 
     cancelButtonText: "取消", 
     type: "warning", 
-  }).then(() => { 
-    knowledges.value = knowledges.value.filter(knowledge => !selectedKnowledges.value.includes(knowledge.id)); 
-    selectedKnowledges.value = []; 
-    totalLogs.value = knowledges.value.length; 
-    ElMessage.success("选中的知识库文章已删除！"); 
+  }).then(() => {
+
+    postWithToken('/api/knowledge/delete-knowledge', {
+      knowledgeIds: selectedKnowledges.value
+    }, ()=>{
+      selectedKnowledges.value = [];
+      totalLogs.value = knowledges.value.length;
+      ElMessage.success("选中的知识库文章已删除！");
+      generateData()
+    })
   }).catch(() => { 
     ElMessage.info("删除已取消"); 
   }); 
 };
-
-// TODO: 类别筛选 
-watch(selectedCategory, (newCategory) => { 
-  
-});
-
 </script>
     
 <template>

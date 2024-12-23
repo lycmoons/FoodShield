@@ -1,36 +1,40 @@
 <script setup>
 import {onMounted, ref} from "vue";
 import router from "@/router/index.js";
-import {post} from "@/net/index.js"
 import {ElMessageBox, ElMessage} from "element-plus";
-import axios from "axios";
-    
+import {get, postWithToken} from "@/net/index.js";
+
 const articles = ref([]);
 const selectedArticles = ref([]);
 const pageSize = ref(20); // 每页显示条数
 const currentPage = ref(1); // 当前页码
 const totalLogs = ref(0); // 数据总条数
 const loading = ref(false); // 加载状态
-
 // 模拟的总数据，写连接的时候删掉
 const allData = ref([]);
+
+// 加上从后端获取的函数
 const generateData = () => {
   const data = [];
-  for (let i = 1; i <= 50; i++) {
-    data.push({
-      id: `A${i}`,
-      title: `食品安全推文${i + 1}`,
-      date: `2024-12-${(i % 30) + 1} 12:00`,
-    });
-  }
-  return data;
+  get('/api/news/all-news',(response) => {
+    for(const item of response) {
+      data.push({
+        id: item.id,
+        title: item.title,
+        date: (new Date(item.date)).toLocaleString(),
+        content: item.content,
+        photo_url: item.photo_url
+      })
+    }
+    allData.value = data
+    totalLogs.value = allData.value.length
+    updatePageData()
+  })
 };
 
 // 初始化数据
 onMounted(() => {
-  allData.value = generateData(); // 生成 50 条数据
-  totalLogs.value = allData.value.length; // 设置总条数
-  updatePageData(); // 更新当前页数据
+  generateData();
 });
 
 // 更新当前页数据
@@ -38,16 +42,7 @@ const updatePageData = () => {
   const start = (currentPage.value - 1) * pageSize.value;
   const end = start + pageSize.value;
   articles.value = allData.value.slice(start, end);
-};
-
-// 跳转到食品安全推文详细页面并传递参数
-const goToArticleDetail = (articles) => {
-  router.push({
-    path: "/admin/articlemanage/articledetail",
-    query: {
-      id: articles.id,
-    },
-  });
+  console.log(articles.value)
 };
 
 // 监听分页变化
@@ -68,14 +63,32 @@ const deleteSelectedArticles = () => {
     confirmButtonText: "确定", 
     cancelButtonText: "取消", 
     type: "danger", 
-  }).then(() => { 
-    articles.value = articles.value.filter(article => !selectedArticles.value.includes(article.id)); 
-    selectedArticles.value = []; 
-    totalLogs.value = articles.value.length; 
-    ElMessage.success("选中的推文已删除！"); 
+  }).then(() => {
+    postWithToken('/api/news/delete-news',{
+      newsIds: selectedArticles.value
+    },()=>{
+      selectedArticles.value = [];
+      totalLogs.value = articles.value.length;
+      ElMessage.success("选中的推文已删除！");
+      generateData();
+    })
   }).catch(() => { 
     ElMessage.info("删除已取消"); 
   }); 
+};
+
+// 跳转到食品安全推文详细页面并传递参数
+const goToArticleDetail = (articles) => {
+  router.push({
+    path: "/admin/articleManage/articleDetail",
+    query: {
+      id: articles.id,
+      title: articles.title,
+      content: articles.content,
+      date: articles.date,
+      photo_url: JSON.stringify(articles.photo_url),
+    },
+  });
 };
 </script>
     

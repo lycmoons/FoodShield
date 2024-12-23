@@ -1,8 +1,6 @@
 package com.lycmoons.entity.dto;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
 import java.util.Date;
 
 @Data
@@ -13,4 +11,5 @@ public class ComplaintDTO {
     String content;
     String photo_url;
     Date date;
+    String accepted;
 }

@@ -1,5 +1,4 @@
 package com.lycmoons.controller;
-
 import com.lycmoons.entity.RestBean;
 import com.lycmoons.entity.vo.request.GetCommentVO;
 import com.lycmoons.entity.vo.request.SendCommentVO;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.List;
 
 @RestController
