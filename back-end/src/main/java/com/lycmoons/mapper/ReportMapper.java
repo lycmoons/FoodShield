@@ -15,3 +15,4 @@ public interface ReportMapper {
     @Update("update Report set photo_url = #{photo_url}")
     int updatePhotoUrl(@Param("photo_url") String photoUrl);
 }
+

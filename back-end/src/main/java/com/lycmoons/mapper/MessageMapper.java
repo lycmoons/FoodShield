@@ -16,3 +16,5 @@ public interface MessageMapper {
     @Insert("insert into Message values (#{id}, #{user_id}, #{content}, #{date})")
     int addMessage(MessageDTO messageDTO);
 }
+
+

@@ -13,7 +13,7 @@ const form = reactive({
   photo_url: [],
 });
 
-const categories = ref(["商超", "食安信息化", "健康", "餐饮", "零食"]);
+const categories = ref(["商超", "食品信息化", "健康", "餐饮", "零食"]);
 
 const formRef = ref();
 const previewImages = ref([]);

@@ -5,3 +5,6 @@ public interface ReportService {
     ReportDTO getReportPhoto();
     String updateReportPhoto(String photo_url, Integer adminId);
 }
+
+
+

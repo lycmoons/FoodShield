@@ -38,8 +38,6 @@ public class JwtAuthorizeFilter extends OncePerRequestFilter {
                 // 放入 Security 的安全上下文中，方便后面业务中取用
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
-                // 可有可无
-                // 给request添加一个id属性，值为用户的id
                 // 后面可以通过request获取用户id
                 request.setAttribute("id", jwtUtil.getUserid(jwt));
             }

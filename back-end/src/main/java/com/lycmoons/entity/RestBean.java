@@ -26,3 +26,5 @@ public class RestBean<T> {
         return JSONObject.toJSONString(this, JSONWriter.Feature.WriteNulls);
     }
 }
+
+

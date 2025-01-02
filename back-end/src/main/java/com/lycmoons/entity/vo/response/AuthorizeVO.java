@@ -10,3 +10,4 @@ public class AuthorizeVO {
     String username;
     String role;
 }
+

@@ -7,7 +7,7 @@ import axios from "axios"
 import zhCn from 'element-plus/es/locale/lang/zh-cn';
 
 
-axios.defaults.baseURL = 'http://localhost:8080'
+axios.defaults.baseURL = 'http://118.89.179.164:8080' // 本地测试：'http://localhost:8080'
 const app = createApp(App)
 app.use(router)
 app.use(ElementPlus)
